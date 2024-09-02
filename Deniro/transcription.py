@@ -15,7 +15,7 @@ class Transcription:
         self.result = "No Audio File Detected"
 
     def on_press(self, key):
-        if key == keyboard.Key.space:
+        if key == keyboard.Key.shift:
             if self.recording:
                 self.recording = False
             else:
@@ -24,7 +24,7 @@ class Transcription:
     def record(self):
         self.audio = []
 
-        print("Press SPACE to start and stop recording")
+        print("Press SHIFT to start and stop recording")
 
         with keyboard.Listener(on_press=self.on_press) as listener:
             while True:
@@ -53,5 +53,5 @@ class Transcription:
             f.writeframes(struct.pack('h' * len(self.audio), *self.audio))
 
     def transcribe(self):
-        self.result = self.model.transcribe(self.file, fp16=False       )
+        self.result = self.model.transcribe(self.file, fp16=False)
         return self.result['text']
