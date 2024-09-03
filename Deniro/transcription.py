@@ -22,7 +22,7 @@ class Transcription:
                 self.recording = True
 
     def record(self):
-        self.audio = []
+        self.audio = [] # reset audio recording
 
         print("Press SHIFT to start and stop recording")
 
