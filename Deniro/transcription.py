@@ -5,9 +5,16 @@ import struct
 from openai import OpenAI
 from pvrecorder import PvRecorder
 from pynput import keyboard
+from elevenlabs import VoiceSettings, play
+from elevenlabs.client import ElevenLabs
+
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
+)
+
+client_elevenlabs = ElevenLabs(
+    api_key=os.environ.get("ELEVENLABS_API_KEY")
 )
 
 
@@ -16,7 +23,8 @@ class Transcription:
         self.recorder = PvRecorder(device_index=-1, frame_length=512)
         self.model = whisper.load_model('base.en')
         self.audio = []
-        self.file = "audio.wav"
+        self.file = "record.wav"
+        self.fileSpeak = "speak.mp3"
         self.recording = False
         self.prompt = "No Audio File Detected"
         self.response = "Please record a prompt"
@@ -86,7 +94,7 @@ class Transcription:
 
         self.response = self.response.choices[0].message.content
 
-        print(self.response)
+        print(self.response + "\n")
 
     def transcribe(self):
         result = self.model.transcribe(self.file, fp16=False)
@@ -94,4 +102,17 @@ class Transcription:
         return self.prompt
 
     def speak(self):
-        pass
+        speak = client_elevenlabs.text_to_speech.convert(
+            voice_id="pNInz6obpgDQGcFmaJgB",
+            output_format="mp3_22050_32",
+            text=self.response,
+            model_id="eleven_turbo_v2_5",
+            voice_settings=VoiceSettings(
+                stability=0.0,
+                similarity_boost=1.0,
+                style=0.0,
+                use_speaker_boost=True,
+            )
+        )
+
+        play(speak)
