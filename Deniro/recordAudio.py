@@ -52,7 +52,7 @@ def on_press(key):
     except AttributeError:
         pass
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     mp3_filename = "output.mp3"
 
     # Start the listener for key presses in a separate thread
@@ -63,4 +63,4 @@ if __name__ == "__main__":
     record_audio_to_mp3(mp3_filename)
     
     # Stop the listener once the recording is finished
-    listener.stop()
+    listener.stop()'''
