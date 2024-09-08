@@ -7,6 +7,7 @@ def main():
     while True:
         test.record()
         print(test.transcribe().strip(), "\n")
+        test.denirotalk()
 
 
 if __name__ == '__main__':
