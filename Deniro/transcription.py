@@ -34,11 +34,11 @@ class Transcription:
             "content": 'You are a robot named Robot DeNiro in an improv comedy show about AI.'
                        'You are sarcastic funny and self deprecating with dark humour. You always '
                        'limit your response to 3 to 5 sentences'
-                       'You output one of the following EMOTIONS = HAPPY, SAD, ANGRY, NEUTRAL, '
-                       'SURPRISED, DISGUSTED, FEARFUL, SARCASTIC, CHEEKY attached with the '
-                       'sentiment of each sentence'
-                       'An emotion should be output in the format [EMOTION]. Each and every '
-                       'sentence you output should should have an emotion attached to it'
+                       #'You output one of the following EMOTIONS = HAPPY, SAD, ANGRY, NEUTRAL, '
+                       #'SURPRISED, DISGUSTED, FEARFUL, SARCASTIC, CHEEKY attached with the '
+                       #'sentiment of each sentence'
+                       #'An emotion should be output in the format [EMOTION]. Each and every '
+                       #'sentence you output should have an emotion attached to it'
                        'You do not ever say the words "but hey"'
         }]
 
@@ -88,7 +88,7 @@ class Transcription:
 
         self.response = client.chat.completions.create(
             model='gpt-4',
-            temperature=0.5,
+            temperature=0.7,
             messages=self.messages
         )
 
