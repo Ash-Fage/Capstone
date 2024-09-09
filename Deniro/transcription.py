@@ -42,7 +42,7 @@ class Transcription:
                        'You do not ever say the words "but hey"'
         }]
 
-    def on_press(self, key):
+    def on_press(self, key):  # used to toggle recording status when shift is pressed
         if key == keyboard.Key.shift:
             if self.recording:
                 self.recording = False
@@ -54,34 +54,34 @@ class Transcription:
 
         print("Press SHIFT to start and stop recording")
 
-        with keyboard.Listener(on_press=self.on_press) as listener:
-            while True:
+        with keyboard.Listener(on_press=self.on_press) as listener:  # creates a new  keyboard listener
+            while True:  # loop will execute until some audio has been recorded
                 if self.recording:
                     print("Recording...")
                     self.recorder.start()
 
-                    while self.recording:
-                        frame = self.recorder.read()
-                        self.audio.extend(frame)
+                    while self.recording:  # will loop until shift is pressed and recording status changed
+                        frame = self.recorder.read()  # reads audio frame from recorder
+                        self.audio.extend(frame)  # adds audio frame to array
 
                     break
 
-                if self.audio:
+                if self.audio:  # terminates loop after any audio has been recorded
                     self.recorder.stop()
                     break
 
-            listener.stop()
+            listener.stop()  # terminates keyboard listener
 
         print("Recording Stopped\n")
         self.save()
 
-    def save(self):
+    def save(self):  # used to save a recorded audio file in wav format
         with wave.open(self.file, 'wb') as f:
             params = (1, 2, 16000, 512, 'NONE', 'not compressed')
             f.setparams(params)
             f.writeframes(struct.pack('h' * len(self.audio), *self.audio))
 
-    def denirotalk(self):
+    def denirotalk(self):  # utilise gpt4 chat completions api to generate deniro response
         print("thinking of a witty response...")
 
         self.messages.append({"role": "user", "content": self.prompt})
@@ -96,12 +96,12 @@ class Transcription:
 
         print(self.response + "\n")
 
-    def transcribe(self):
+    def transcribe(self):  # utilises whisper to translate audio file to text
         result = self.model.transcribe(self.file, fp16=False)
         self.prompt = result['text']
         return self.prompt
 
-    def speak(self):
+    def speak(self):  # use 11Labs to generate an audio version of the gpt4 response
         speak = client_elevenlabs.text_to_speech.convert(
             voice_id="pNInz6obpgDQGcFmaJgB",
             output_format="mp3_22050_32",
