@@ -2,13 +2,13 @@ from transcription import Transcription
 
 
 def main():
-    test = Transcription()
+    '''test = Transcription()
 
     while True:
         test.record()
         print(test.transcribe().strip(), "\n")
         test.denirotalk()
-        test.speak()
+        test.speak()'''
 
 
 if __name__ == '__main__':
