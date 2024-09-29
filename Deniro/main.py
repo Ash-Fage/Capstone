@@ -1,10 +1,18 @@
 import threading
 import socket
+import random
 from deniro import Conversation
-
+from playsound import playsound
 
 host = ''
-port = 1212
+port = 12121
+done_event = threading.Event()
+
+
+def speak_thread(conv):
+    conv.generate_response()
+    conv.speak()
+    done_event.set()
 
 
 def handle(conn, addr):
@@ -16,8 +24,16 @@ def handle(conn, addr):
             data = conn.recv(1024).decode()
             if data:
                 conv.set_prompt(data)
-                conv.generate_response()
-                conv.speak()
+
+                thread = threading.Thread(target=speak_thread, args=(conv,))
+                thread.start()
+
+                playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+
+                done_event.wait()
+                conv.talk()
+
+
 
 
 def main():
