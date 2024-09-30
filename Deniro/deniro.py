@@ -46,7 +46,7 @@ class Conversation:
 
         print(self.response + "\n")
 
-    def speak(self):  # use 11Labs to generate an audio version of the gpt4 response
+    def textToSpeech(self):  # use 11Labs to generate an audio version of the gpt4 response
         self.audio_data = client_elevenlabs.text_to_speech.convert(
             voice_id="pNInz6obpgDQGcFmaJgB",
             output_format="mp3_22050_32",
