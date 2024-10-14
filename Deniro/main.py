@@ -1,41 +1,43 @@
 import threading
-import socket
 import random
 from deniro import Conversation
 from deniro_scripted import Script
 from playsound import playsound
+import websockets
+import asyncio
+import requests
 
 host = ''
-port = 1212
+port = 44444
+device_host = requests.get("http://wtfismyip.com/text").text
 done_event = threading.Event()
 conv = Conversation()
 script = Script()
 
 
-def speak_thread(conv):
+def speak_thread():
     conv.generate_response()
     conv.textToSpeech()
     done_event.set()
 
 
-def handle(conn, addr):
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024).decode()
-            if data:
-                conv.set_prompt(data)
+async def handle(websocket):
+    try:
+        async for message in websocket:
+            conv.set_prompt(message)
 
-                thread = threading.Thread(target=speak_thread, args=(conv,))
-                thread.start()
+            thread = threading.Thread(target=speak_thread)
+            thread.start()
 
-                playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+            playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
 
-                done_event.wait()
-                conv.talk()
+            done_event.wait()
+            conv.talk()
+    except websockets.exceptions.ConnectionClosedError:
+        print("Connection closed")
 
 
-def main():
+async def main():
     while True:
         mode = input("Enter S for scripted or I for improv: ")
 
@@ -46,18 +48,13 @@ def main():
             script.speak()
 
         elif mode.upper() == "I":
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.bind((host, port))
-                s.listen()
-
-                while True:
-                    conn, addr = s.accept()
-                    thread = threading.Thread(target=handle, args=(conn, addr))
-                    thread.start()
-
+            server = await websockets.serve(handle, host=host, port=port)
+            print("Ready For Connections")
+            print(f"\nServing on: \nhost={device_host}port={port}")
+            await server.wait_closed()
         else:
             print("Invalid\n")
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
