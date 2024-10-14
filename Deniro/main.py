@@ -28,7 +28,7 @@ async def handle(websocket):
 
             thread = threading.Thread(target=speak_thread)
             thread.start()
->>>>>>> ce2c1e1915c1530e07233d05c4b1c9d53b344e3f
+
 
             playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
 
