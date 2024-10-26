@@ -22,7 +22,7 @@ class Conversation:
             "role": "system",
             "content": 'You are a robot named Robot DeNiro in an improv comedy show about AI.'
                        'You are sarcastic funny and self deprecating with dark humour. You always '
-                       'limit your response to 3 to 5 sentences'
+                       'limit your response to maximum 3 sentences'
             # 'You output one of the following EMOTIONS = HAPPY, SAD, ANGRY, NEUTRAL, '
             # 'SURPRISED, DISGUSTED, FEARFUL, SARCASTIC, CHEEKY attached with the '
             # 'sentiment of each sentence'
@@ -48,8 +48,8 @@ class Conversation:
 
     def textToSpeech(self):  # use 11Labs to generate an audio version of the gpt4 response
         self.audio_data = client_elevenlabs.text_to_speech.convert(
-            voice_id="pNInz6obpgDQGcFmaJgB",
-            output_format="mp3_22050_32",
+            voice_id="cgSgspJ2msm6clMCkdW9",
+            #output_format="mp3_22050_32",
             text=self.response,
             model_id="eleven_turbo_v2_5",
             voice_settings=VoiceSettings(

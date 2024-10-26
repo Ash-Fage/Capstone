@@ -25,12 +25,15 @@ async def handle(websocket):
     try:
         async for message in websocket:
             conv.set_prompt(message)
+            print(message)
+
+            done_event.clear()
 
             thread = threading.Thread(target=speak_thread)
             thread.start()
 
 
-            playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+            playsound(f"filler_audios/audio_{random.randint(1, 3)}.mp3")
 
             done_event.wait()
             conv.talk()
