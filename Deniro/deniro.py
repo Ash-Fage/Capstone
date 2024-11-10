@@ -31,6 +31,8 @@ class Conversation:
                        'You do not ever say the words "but hey"'
         }]
 
+        self.sumMessage = None
+
     def generate_response(self):  # utilise gpt4 chat completions api to generate deniro response
         print("thinking of a witty response...")
 
