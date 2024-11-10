@@ -9,6 +9,7 @@ from playsound import playsound
 host = ''
 port = 1212
 shift_pressed = False
+is_responding = False
 
 done_event = threading.Event()
 conv = Conversation()
@@ -26,6 +27,9 @@ def speak_thread():
 
 def respond():
     # Joins all 1 minute segments together and sends them to generate a response
+    global is_responding
+    is_responding = True
+
     with part_lock:
         prompt = ' '.join(part)
         print(prompt)
@@ -41,6 +45,7 @@ def respond():
         done_event.wait()  # Code waits here till response is generated
         conv.talk()
         part.clear()
+    is_responding = False
 
 
 def handle(conn, addr):
@@ -49,8 +54,9 @@ def handle(conn, addr):
         while True:
             data = conn.recv(1024).decode()
             if data:
-                with part_lock:
-                    part.append(data)
+                if not is_responding:
+                    with part_lock:
+                        part.append(data)
 
 
 # The three functions below are used to listen for a press of the shift key

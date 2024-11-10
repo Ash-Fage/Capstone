@@ -31,13 +31,30 @@ class Conversation:
                        'You do not ever say the words "but hey"'
         }]
 
-        self.sumMessage = None
+        self.sumMessage = [{
+            "role": "system",
+            "content": 'You are a robot assistant who is job is to summarise content'
+                       'any content you summarise will be fed back into GPT as context for a response'
+                       'please keep summarise in a way that will generate good responses while preserving key points'
+                       # can be changed
+                       'The final line of every summary should be "What are your thoughts on all of this?"'
+        }]
 
     def generate_response(self):  # utilise gpt4 chat completions api to generate deniro response
         print("thinking of a witty response...")
 
-        self.messages.append({"role": "user", "content": self.prompt})
+        self.sumMessage.append({"role": "user", "content": self.prompt})
+        self.prompt = client.chat.completions.create(
+            model='gpt-4',
+            temperature=0.7,
+            messages=self.sumMessage
+        )
 
+        self.sumMessage.pop()
+        self.prompt = self.prompt.choices[0].message.content
+        print(self.prompt + "\n")
+
+        self.messages.append({"role": "user", "content": self.prompt})
         self.response = client.chat.completions.create(
             model='gpt-4',
             temperature=0.7,
@@ -45,7 +62,6 @@ class Conversation:
         )
 
         self.response = self.response.choices[0].message.content
-
         print(self.response + "\n")
 
     def textToSpeech(self):  # use 11Labs to generate an audio version of the gpt4 response
