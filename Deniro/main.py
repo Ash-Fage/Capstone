@@ -1,3 +1,4 @@
+import os
 import threading
 import socket
 import random
@@ -15,8 +16,12 @@ done_event = threading.Event()
 conv = Conversation()
 script = Script()
 
-part = []
-part_lock = threading.Lock()
+
+def save_to_file(result, directory='debate', filename='output.txt'):
+    file_path = os.path.join(directory, filename)
+
+    with open(file_path, 'a') as f:
+        f.write(result + '\n')
 
 
 def speak_thread():
@@ -30,21 +35,30 @@ def respond():
     global is_responding
     is_responding = True
 
-    with part_lock:
-        prompt = ' '.join(part)
-        print(prompt)
-        conv.set_prompt(prompt)
-        done_event.clear()
+    file_path = os.path.join('debate', 'output.txt')
+    new_file_path = os.path.join('debate', 'full_output.txt')
 
-        thread = threading.Thread(target=speak_thread)  # starts generate the response in another thread
-        thread.start()
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        result = ' '.join(line.strip() for line in lines)
 
-        # Plays a filler audio while response is being generated in other thread
-        playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+    with open(file_path, 'w'):
+        pass
 
-        done_event.wait()  # Code waits here till response is generated
-        conv.talk()
-        part.clear()
+    with open(new_file_path, 'w') as new_file:
+        new_file.write(result)
+
+    conv.set_prompt(result)
+    done_event.clear()
+
+    thread = threading.Thread(target=speak_thread)  # starts generate the response in another thread
+    thread.start()
+
+    # Plays a filler audio while response is being generated in other thread
+    playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+
+    done_event.wait()  # Code waits here till response is generated
+    conv.talk()
     is_responding = False
 
 
@@ -55,8 +69,8 @@ def handle(conn, addr):
             data = conn.recv(1024).decode()
             if data:
                 if not is_responding:
-                    with part_lock:
-                        part.append(data)
+                    output = conv.summarise(data)
+                    save_to_file(output)
 
 
 # The three functions below are used to listen for a press of the shift key
