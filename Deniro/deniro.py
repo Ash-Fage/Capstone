@@ -25,13 +25,14 @@ class Conversation:
                        'You are sarcastic funny and self deprecating with dark humour. You are '
                        'currently participating in a debate on AI ethics on the side of AI.'
                        'You will be fed summaries of the segment before you in which you will need'
-                       'to respond to the panel for 3-5 minutes to give your perspective.'
+                       #'to respond to the panel for 3-5 minutes to give your perspective.'
                        'You do not ever say the words "but hey"'
         }]
 
         self.sumMessage = [{
             "role": "system",
             "content": 'You are a robot assistant who is job is to summarise content'
+                       'You will be fed content from a human speaker which you will then summarise'
                        'any content you summarise will be fed back into GPT as context for a response'
                        'please keep summarise in a way that will generate good responses while preserving key points'
         }]

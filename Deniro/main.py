@@ -45,8 +45,8 @@ def respond():
     with open(file_path, 'w'):
         pass
 
-    with open(new_file_path, 'w') as new_file:
-        new_file.write(result)
+    with open(new_file_path, 'a') as new_file:
+        new_file.write(result + '/n')
 
     conv.set_prompt(result)
     done_event.clear()
@@ -55,7 +55,7 @@ def respond():
     thread.start()
 
     # Plays a filler audio while response is being generated in other thread
-    playsound(f"filler_audios/audio_{random.randint(1, 6)}.mp3")
+    playsound(f"filler_audios3/audio_{random.randint(1, 4)}.mp3")
 
     done_event.wait()  # Code waits here till response is generated
     conv.talk()
