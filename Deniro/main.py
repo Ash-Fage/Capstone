@@ -1,10 +1,13 @@
 from transcribe import Transcriber
 from improv import Responder
+from scripted import Script
 from pynput import keyboard
 import threading
 
 transcriber = Transcriber()
 responder = Responder()
+script = Script()
+
 listener = None
 
 
@@ -69,16 +72,39 @@ def on_press(key):
         shift_pressed()
 
 
-def main():
+def improv_mode():
     print("Welcome To Deniro")
     print("-----------------")
     print("Press SPACE to start recording")
 
     global listener
     listener = keyboard.Listener(on_press=on_press)
-
     listener.start()
     listener.join()
+
+
+def scripted_mode():
+    filename = input("Enter filename: ")
+    script.set_script_file(filename)
+    script.textToSpeech()
+    script.speak()
+
+
+def main():
+    while True:
+        print("\nSelect a mode:")
+        print("i - Improv Mode")
+        print("s - Scripted Mode")
+
+        choice = input("Enter your choice: ").lower()
+
+        match choice:
+            case 'i':
+                improv_mode()
+            case 's':
+                scripted_mode()
+            case _:
+                print("Invalid choice. Please try again.")
 
 
 if __name__ == '__main__':
