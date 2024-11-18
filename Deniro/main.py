@@ -12,7 +12,7 @@ listener = None
 
 
 def recording_thread():
-    print("\n🎙️ Recording started... Press SPACE to stop")
+    print("\n🎙️ Recording started... Press 1 to stop")
     transcriber.record_audio()
 
 
@@ -21,18 +21,21 @@ def summary_thread():
     responder.summarise()
     print("✅ Summarized")
 
-    print("\nPress SPACE to start recording")
+    print("\nPress 1 to start recording")
+
+def talk():
+    responder.talk()
+    print("\nPress 1 to start recording")
 
 
 def shift_pressed():
     global listener
     listener.stop()
 
-    print("\n🤖 Thinking and speaking...")
+    print("\n🤖 Thinking...")
     responder.respond()
     responder.speak()
-    print("\nPress SPACE to start recording")
-
+    print("\nResponse Ready, Press 9 To Play")
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
     listener.join()
@@ -63,19 +66,21 @@ def space_pressed():
 
 def on_press(key):
     if transcriber.recording:
-        if key == keyboard.Key.space:
+        if key == keyboard.KeyCode.from_char('1'):
             space_pressed()
         return
-    if key == keyboard.Key.space:
+    if key == keyboard.KeyCode.from_char('1'):
         space_pressed()
-    elif key == keyboard.Key.shift:
+    elif key == keyboard.KeyCode.from_char('5'):
         shift_pressed()
+    elif key == keyboard.KeyCode.from_char('9'):
+        talk()
 
 
 def improv_mode():
     print("Welcome To Deniro")
     print("-----------------")
-    print("Press SPACE to start recording")
+    print("Press 1 to start recording")
 
     global listener
     listener = keyboard.Listener(on_press=on_press)
